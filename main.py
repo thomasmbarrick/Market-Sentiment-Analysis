@@ -1,12 +1,14 @@
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import pandas as pd
 
 base_url = "https://finviz.com/quote.ashx?t="
 stock_symbols = ["AMD", "NVDA", "INTC"]
 
 
 news_data = {}
-final_data = []
+stock_data = []
 for stock in stock_symbols:
     url = base_url + stock
     
@@ -17,7 +19,6 @@ for stock in stock_symbols:
     news_data[stock] = html.find(id="news-table")
     data_rows = news_data[stock].findAll("tr")
     
-    stock_data = []
     for index, row in enumerate(data_rows):
         
         article_title = row.a.text 
@@ -37,10 +38,14 @@ for stock in stock_symbols:
             
         stock_data.append([stock, article_date, article_time, article_title])
         
-    final_data.append(stock_data)
     
+print(stock_data)
+df = pd.DataFrame(stock_data, columns=["stock", "article_date", "article_time", "article_title"])
 
-        
-print(final_data)
+vader = SentimentIntensityAnalyzer()
 
+compound_function = lambda title: vader.polarity_scores(title)["compound"]
 
+df["compound"] = df["article_title"].apply(compound_function)
+
+print(df.head)
