@@ -2,6 +2,8 @@ from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import pandas as pd
+import matplotlib.pyplot as plt
+import datetime
 
 base_url = "https://finviz.com/quote.ashx?t="
 stock_symbols = ["AMD", "NVDA", "INTC"]
@@ -39,7 +41,6 @@ for stock in stock_symbols:
         stock_data.append([stock, article_date, article_time, article_title])
         
     
-print(stock_data)
 df = pd.DataFrame(stock_data, columns=["stock", "article_date", "article_time", "article_title"])
 
 vader = SentimentIntensityAnalyzer()
@@ -48,4 +49,8 @@ compound_function = lambda title: vader.polarity_scores(title)["compound"]
 
 df["compound"] = df["article_title"].apply(compound_function)
 
-print(df.head)
+print("hey")
+
+plt.figure(figsize=(10,8))
+
+mean_df = df.groupby(["stock", "article_date"]).mean()
