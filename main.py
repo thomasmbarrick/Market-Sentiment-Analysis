@@ -13,7 +13,7 @@ for stock in stock_symbols:
     req = Request(url=url, headers={"user-agent": "market-sentiment"})
     response = urlopen(req)
     
-    html = BeautifulSoup(response, "html")
+    html = BeautifulSoup(response, features="html.parser")
     news_data[stock] = html.find(id="news-table")
     data_rows = news_data[stock].findAll("tr")
     
@@ -38,9 +38,9 @@ for stock in stock_symbols:
         stock_data.append([stock, article_date, article_time, article_title])
         
     final_data.append(stock_data)
-    break
+    
 
         
-#print(final_data)
+print(final_data)
 
 
