@@ -52,5 +52,9 @@ df["compound"] = df["article_title"].apply(compound_function)
 print("hey")
 
 plt.figure(figsize=(10,8))
-
+df = df.drop(columns=['article_time', 'article_title'])
 mean_df = df.groupby(["stock", "article_date"]).mean()
+mean_df = mean_df.unstack()
+mean_df = mean_df.xs("compound" , axis="columns").transpose()
+mean_df.plot(kind="bar")
+plt.show()
