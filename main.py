@@ -6,7 +6,14 @@ import matplotlib.pyplot as plt
 import datetime
 
 base_url = "https://finviz.com/quote.ashx?t="
-stock_symbols = ["AMD", "NVDA", "INTC"]
+
+stock_num = int(input("How many stocks would you like to compare the sentiment of? "))
+
+stock_symbols = []
+
+for num in range(stock_num):
+    stock_sym = input("Stock number " + str(num + 1) + ": ")
+    stock_symbols.append(stock_sym)
 
 
 news_data = {}
@@ -15,11 +22,18 @@ for stock in stock_symbols:
     url = base_url + stock
     
     req = Request(url=url, headers={"user-agent": "market-sentiment"})
-    response = urlopen(req)
+    try:
+        response = urlopen(req)
+    except:
+        print(f"{stock} not found on finviz. Please try again")
+        exit()
     
     html = BeautifulSoup(response, features="html.parser")
     news_data[stock] = html.find(id="news-table")
-    data_rows = news_data[stock].findAll("tr")
+    try:
+        data_rows = news_data[stock].findAll("tr")
+    except:
+        print(f"No articles found for {stock}. Cannot establish sentiment. Please try again.")
     
     for index, row in enumerate(data_rows):
         
