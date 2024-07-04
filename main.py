@@ -4,9 +4,16 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def user_input_get_stocks_symbols():
-    stock_num = int(input("How many stocks would you like to compare the sentiment of? "))
 
+
+def user_input_get_stocks_symbols():
+    
+    try:
+        stock_num = int(input("How many stocks would you like to compare the sentiment of? "))
+    except(ValueError):
+        print("ValueError: Input Integers only.")#
+        main()
+    
     stock_symbols = []
 
     for num in range(stock_num):
